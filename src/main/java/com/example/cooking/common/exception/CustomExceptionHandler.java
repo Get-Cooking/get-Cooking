@@ -6,6 +6,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
@@ -28,11 +29,6 @@ public class CustomExceptionHandler {
         return new CustomErrorResponse(message, status, errors, LocalDateTime.now());
     }
 
-    @ExceptionHandler(Exception.class)
-    public CustomErrorResponse handleExceptions(Exception e) {
-        log.error(e.getMessage(), e);
-        return buildErrorResponse("Something is wrong, please repeat later", HttpStatus.INTERNAL_SERVER_ERROR);
-    }
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<CustomErrorResponse> handleEntityNotFoundException(EntityNotFoundException e) {
@@ -193,5 +189,30 @@ public class CustomExceptionHandler {
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .build());
     }
+
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    public ResponseEntity<CustomErrorResponse> handleSmsAlreadySentException(MethodArgumentNotValidException e) {
+        log.error(e.getMessage(), e);
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(CustomErrorResponse.builder()
+                        .message("Email or name valid exception")
+                        .timestamp(LocalDateTime.now())
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .build());
+    }
+
+    @ExceptionHandler(value = Exception.class)
+    public ResponseEntity<CustomErrorResponse> handleSmsAlreadySentException(Exception e) {
+        log.error(e.getMessage(), e);
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(CustomErrorResponse.builder()
+                        .message("Interval server error ")
+                        .timestamp(LocalDateTime.now())
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .build());
+    }
+
 
 }

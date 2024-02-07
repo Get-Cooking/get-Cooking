@@ -1,7 +1,5 @@
-package com.example.cooking.category.entity;
+package com.example.cooking.user.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,9 +7,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Entity
-public class Category {
-    @Id
+public class UserResponseDto {
+
     private Integer id;
     private String name;
+    private String email;
+    private String password;
 }
